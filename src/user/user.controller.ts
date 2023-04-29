@@ -7,7 +7,7 @@ export class UserController {
     constructor(private userService: UserService) {}
     
     @Post('login')
-    Login(
+    login(
         @Body('playerId') playerId: string,
         @Body('Password') Password: string,
         ): string {
