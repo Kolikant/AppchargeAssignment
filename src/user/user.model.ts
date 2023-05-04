@@ -1,9 +1,9 @@
 import { v4 as uuidv4 } from 'uuid';
 
 export class UserSession {
-    sessiodId: string
+  sessiodId: string;
 
-    constructor(public playerId: string) {
-        this.sessiodId = uuidv4();
-    }
+  constructor(public playerId: string) {
+    this.sessiodId = uuidv4();
+  }
 }

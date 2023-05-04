@@ -17,7 +17,6 @@ import { UpdateOfferDto } from './dtos/update-offer.dto';
 export class OfferController {
   constructor(private offerService: OfferService) {}
 
-
   @Post()
   create(@Body() createOfferDto: CreateOfferDto): OfferDto {
     return this.offerService.create(createOfferDto);
