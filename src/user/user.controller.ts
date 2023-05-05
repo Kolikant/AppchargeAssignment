@@ -15,4 +15,13 @@ export class UserController {
     console.log(userSession);
     return userSession.sessiodId;
   }
+
+  // TODO: Clear signup after tsting
+  @Post('signUpUser')
+  signup(
+    @Body('playerId') playerId: string,
+    @Body('Password') Password: string,
+  ): void {
+    this.userService.signUpUser(playerId, Password);
+  }
 }

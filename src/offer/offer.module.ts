@@ -6,5 +6,6 @@ import { OfferService } from './offer.service';
   imports: [],
   controllers: [OfferController],
   providers: [OfferService],
+  exports: [OfferService],
 })
 export class OfferModule {}

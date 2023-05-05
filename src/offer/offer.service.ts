@@ -5,6 +5,7 @@ import { UpdateOfferDto } from './dtos/update-offer.dto';
 
 @Injectable()
 export class OfferService {
+  //TODO: save offers in mongo
   private offers: OfferDto[] = [];
   private nextId = 1;
 

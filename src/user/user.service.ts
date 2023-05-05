@@ -25,8 +25,17 @@ export class UserService {
     );
   }
 
+  signUpUser(playerId: string, password: string) {
+    // TODO: put user into mongo
+    return true;
+  }
+
   private validateUser(playerId: string, password: string) {
     //TODO: implement validation from userDB
     return true;
+  }
+
+  getUserFromSession(sessionId: string): string {
+    throw new Error('Method not implemented.');
   }
 }

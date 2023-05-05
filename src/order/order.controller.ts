@@ -2,17 +2,14 @@ import { Controller, Post, Body } from '@nestjs/common';
 
 import { OrderService } from './order.service';
 
+import { CreateOrderDto } from './dtos/create-order.dto';
+
 @Controller('order')
 export class OrderController {
   constructor(private orderService: OrderService) {}
 
-  @Post('login')
-  login(
-    @Body('playerId') playerId: string,
-    @Body('Password') Password: string,
-  ): string {
-    const orderSession = this.orderService.loginOrder(playerId, Password);
-    console.log(orderSession);
-    return orderSession.sessiodId;
+  @Post()
+  async createOrder(@Body() createOrderDto: CreateOrderDto): Promise<string> {
+    return await this.orderService.createOrder(createOrderDto);
   }
 }
