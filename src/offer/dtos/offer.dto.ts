@@ -1,7 +1,7 @@
 export class OfferDto {
-  id: number;
+  id: string;
   gameId: string;
-  avlabilty: number;
+  availability: number;
   offerSetName: string;
   offerSetId: string;
   sku: string;

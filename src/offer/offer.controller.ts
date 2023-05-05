@@ -18,18 +18,18 @@ export class OfferController {
   constructor(private offerService: OfferService) {}
 
   @Post()
-  create(@Body() createOfferDto: CreateOfferDto): OfferDto {
+  async create(@Body() createOfferDto: CreateOfferDto): Promise<OfferDto> {
     return this.offerService.create(createOfferDto);
   }
 
   @Get()
-  findAll(): OfferDto[] {
+  findAll(): Promise<OfferDto[]> {
     return this.offerService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): OfferDto {
-    const offer = this.offerService.findOne(+id);
+  async findOne(@Param('id') id: string): Promise<OfferDto> {
+    const offer = await this.offerService.findOne(id);
     if (!offer) {
       throw new NotFoundException(`Offer with ID ${id} not found`);
     }
@@ -37,11 +37,11 @@ export class OfferController {
   }
 
   @Patch(':id')
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateOfferDto: UpdateOfferDto,
-  ): OfferDto {
-    const offer = this.offerService.update(+id, updateOfferDto);
+  ): Promise<OfferDto> {
+    const offer = await this.offerService.update(id, updateOfferDto);
     if (!offer) {
       throw new NotFoundException(`Offer with ID ${id} not found`);
     }
@@ -49,11 +49,11 @@ export class OfferController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string): void {
-    const offer = this.offerService.findOne(+id);
+  async remove(@Param('id') id: string): Promise<void> {
+    const offer = this.offerService.findOne(id);
     if (!offer) {
       throw new NotFoundException(`Offer with ID ${id} not found`);
     }
-    this.offerService.remove(+id);
+    this.offerService.remove(id);
   }
 }

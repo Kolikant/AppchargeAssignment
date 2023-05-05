@@ -58,18 +58,14 @@ export class OrderService {
       );
     }
 
-    const offer: OfferDto = await this.offerService.findOne(
+    const offer: OfferDto = await this.offerService.decreaseAvailability(
       createOrderDto.offerSetId,
     );
-    if (offer == null || offer == undefined || offer.avlabilty == 0) {
+    if (offer == null || offer == undefined) {
       throw new NotFoundException(
         `No offer with id ${createOrderDto.offerSetId}`,
       );
     }
-
-    this.offerService.update(createOrderDto.offerSetId, {
-      avlabilty: offer.avlabilty - 1,
-    });
 
     const order = new Order(userId, createOrderDto.offerSetId);
     //TODO: push order to mongo

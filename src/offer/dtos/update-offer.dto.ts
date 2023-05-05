@@ -1,6 +1,6 @@
 export class UpdateOfferDto {
   gameId?: string;
-  avlabilty?: number;
+  availability?: number;
   offerSetName?: string;
   offerSetId?: string;
   sku?: string;

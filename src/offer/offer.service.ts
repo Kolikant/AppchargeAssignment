@@ -1,46 +1,67 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { OfferDto } from './dtos/offer.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+
+import { Offer, OfferModel } from './offer.model';
 import { CreateOfferDto } from './dtos/create-offer.dto';
 import { UpdateOfferDto } from './dtos/update-offer.dto';
 
 @Injectable()
 export class OfferService {
-  //TODO: save offers in mongo
-  private offers: OfferDto[] = [];
-  private nextId = 1;
+  constructor(
+    @InjectModel(OfferModel.name) private readonly offerModel: Model<Offer>,
+  ) {}
 
-  create(createOfferDto: CreateOfferDto): OfferDto {
-    const offer: OfferDto = {
-      id: this.nextId++,
-      ...createOfferDto,
-    };
-    this.offers.push(offer);
-    return offer;
+  async create(createOfferDto: CreateOfferDto): Promise<Offer> {
+    const createdOffer = new this.offerModel(createOfferDto);
+    return createdOffer.save();
   }
 
-  findAll(): OfferDto[] {
-    return this.offers;
+  async findAll(): Promise<Offer[]> {
+    return this.offerModel.find().exec();
   }
 
-  findOne(id: number): OfferDto {
-    const offer = this.offers.find((o) => o.id === id);
+  async findOne(id: string): Promise<Offer> {
+    const offer = await this.offerModel.findById(id).exec();
     if (!offer) {
       throw new NotFoundException(`Offer with ID ${id} not found`);
     }
     return offer;
   }
 
-  update(id: number, updateOfferDto: UpdateOfferDto): OfferDto {
-    const offer = this.findOne(id);
-    Object.assign(offer, updateOfferDto);
-    return offer;
-  }
-
-  remove(id: number): void {
-    const index = this.offers.findIndex((o) => o.id === id);
-    if (index === -1) {
+  async update(id: string, updateOfferDto: UpdateOfferDto): Promise<Offer> {
+    const updatedOffer = await this.offerModel
+      .findByIdAndUpdate(id, updateOfferDto, { new: true })
+      .exec();
+    if (!updatedOffer) {
       throw new NotFoundException(`Offer with ID ${id} not found`);
     }
-    this.offers.splice(index, 1);
+    return updatedOffer;
+  }
+
+  async decreaseAvailability(id: string): Promise<Offer> {
+    const filter = { _id: id, availability: { $gt: 0 } };
+    const offer = await this.offerModel
+      .findOneAndUpdate(
+        filter,
+        { $inc: { quantity: -1, availability: 1 } },
+        {
+          new: true,
+        },
+      )
+      .exec();
+    if (!offer) {
+      throw new NotFoundException(
+        `Offer with ID ${id} not found or not available`,
+      );
+    }
+    return offer.toObject({ getters: true });
+  }
+
+  async remove(id: string): Promise<void> {
+    const result = await this.offerModel.deleteOne({ _id: id }).exec();
+    if (result.deletedCount === 0) {
+      throw new NotFoundException(`Offer with ID ${id} not found`);
+    }
   }
 }
