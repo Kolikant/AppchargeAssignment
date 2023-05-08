@@ -1,9 +1,15 @@
-import { v4 as uuidv4 } from 'uuid';
+import * as mongoose from 'mongoose';
 
-export class Order {
-  orderId: string;
+export const OrderSchema = new mongoose.Schema({
+  id: { type: String, required: true },
+  userId: { type: String, required: true },
+  offerId: { type: String, required: true },
+});
 
-  constructor(public userId: string, public offerId: string) {
-    this.orderId = uuidv4();
-  }
+export interface Order extends mongoose.Document {
+  id: string;
+  userId: string;
+  offerId: string;
 }
+
+export const OrderModel = mongoose.model<Order>('Order', OrderSchema);

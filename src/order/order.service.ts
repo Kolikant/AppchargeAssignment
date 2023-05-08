@@ -2,11 +2,12 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { OfferService } from '../offer/offer.service';
 import { EncryptionService } from '../encryption/encryption.service';
+import { v4 as uuidv4 } from 'uuid';
 
 import { CreateOrderDto } from './dtos/create-order.dto';
 import { CreditCardInformationDTO } from './dtos/credit-card-information.dto';
 
-import { Order } from './order.model';
+import { OrderModel } from './order.model';
 import { HttpException } from '@nestjs/common';
 import { HttpStatus } from '@nestjs/common';
 import { OfferDto } from 'src/offer/dtos/offer.dto';
@@ -44,7 +45,7 @@ export class OrderService {
     );
     if (userId == null) {
       throw new NotFoundException(
-        `No user connected with seesion ${createOrderDto.sessionId}`,
+        `No user connected with session ${createOrderDto.sessionId}`,
       );
     }
 
@@ -67,8 +68,13 @@ export class OrderService {
       );
     }
 
-    const order = new Order(userId, createOrderDto.offerSetId);
-    //TODO: push order to mongo
-    return this.encryptionService.encrypt(order.orderId);
+    const order = new OrderModel({
+      id: uuidv4(),
+      userId,
+      offerId: createOrderDto.offerSetId,
+    });
+    await order.save();
+
+    return this.encryptionService.encrypt(order.id);
   }
 }
