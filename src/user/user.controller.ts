@@ -13,7 +13,7 @@ export class UserController {
   ): string {
     const userSession = this.userService.loginUser(playerId, Password);
     console.log(userSession);
-    return userSession.sessiodId;
+    return userSession.sessionId;
   }
 
   // TODO: Clear signup after tsting
