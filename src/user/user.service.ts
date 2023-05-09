@@ -1,25 +1,29 @@
+import { v4 as uuidv4 } from 'uuid';
+
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
-import { UserSession, User } from './user.model';
+import { User } from './user.model';
 
 @Injectable()
 export class UserService {
-  userSessions: UserSession[] = []; //TODO: have seesions stored in dedicated service rather than on memory to allow sacling
-
   constructor(@InjectModel('User') private readonly userModel: Model<User>) {}
 
-  loginUser(playerId: string, password: string) {
-    if (this.validateUser(playerId, password)) {
-      let session = this.userSessions.find(
-        (session) => session.playerId == playerId,
+  async loginUser(playerId: string, password: string) {
+    const logedUser = await this.validateUser(playerId, password);
+    if (logedUser !== null) {
+      const newSessionId = uuidv4();
+      await this.userModel.updateOne(
+        {
+          playerId,
+          password,
+        },
+        {
+          sessionId: newSessionId,
+        },
       );
-      if (session === undefined) {
-        session = new UserSession(playerId);
-        this.userSessions.push(session);
-      }
-      return session;
+      return newSessionId;
     }
     throw new Error(
       JSON.stringify({
@@ -36,21 +40,17 @@ export class UserService {
   }
 
   private async validateUser(playerId: string, password: string) {
-    const user = await this.userModel
+    return this.userModel
       .findOne({
         playerId: playerId,
         password: password,
       })
       .exec();
-    return user != null;
   }
 
   async getUserIdFromSession(sessionId: string): Promise<string | null> {
-    const session = this.userSessions.find(
-      (session) => session.sessionId === sessionId,
-    );
-    if (session) {
-      const user = await this.userModel.findById(session.playerId).exec();
+    const user = await this.userModel.findOne({ sessionId });
+    if (user) {
       return user.id;
     }
     return null;

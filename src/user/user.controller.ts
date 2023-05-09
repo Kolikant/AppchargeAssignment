@@ -7,13 +7,12 @@ export class UserController {
   constructor(private userService: UserService) {}
 
   @Post('login')
-  login(
+  async login(
     @Body('playerId') playerId: string,
     @Body('Password') Password: string,
-  ): string {
-    const userSession = this.userService.loginUser(playerId, Password);
-    console.log(userSession);
-    return userSession.sessionId;
+  ): Promise<string> {
+    const userSession = await this.userService.loginUser(playerId, Password);
+    return userSession;
   }
 
   // TODO: Clear signup after tsting
