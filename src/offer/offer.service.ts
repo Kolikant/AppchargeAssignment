@@ -40,11 +40,11 @@ export class OfferService {
   }
 
   async decreaseAvailability(id: string): Promise<Offer> {
-    const filter = { _id: id, availability: { $gt: 0 } };
+    const filter = { offerSetId: id, availability: { $gt: 0 } };
     const offer = await this.offerModel
       .findOneAndUpdate(
         filter,
-        { $inc: { quantity: -1, availability: 1 } },
+        { $inc: { availability: -1 } },
         {
           new: true,
         },

@@ -9,7 +9,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { CreateOrderDto } from './dtos/create-order.dto';
 import { CreditCardInformationDTO } from './dtos/credit-card-information.dto';
 
-import { Order, OrderModel } from './order.model';
+import { Order } from './order.model';
 import { HttpException } from '@nestjs/common';
 import { HttpStatus } from '@nestjs/common';
 import { OfferDto } from 'src/offer/dtos/offer.dto';
@@ -70,8 +70,8 @@ export class OrderService {
         `No offer with id ${createOrderDto.offerSetId}`,
       );
     }
-
-    const order = new OrderModel({
+    //TODO: Increase if failed at this part
+    const order = new this.orderModel({
       id: uuidv4(),
       userId,
       offerId: createOrderDto.offerSetId,

@@ -5,14 +5,14 @@ import * as crypto from 'crypto';
 
 @Injectable()
 export class EncryptionService {
-  private encryptionKey = 'TODO: notHavePlaintextEncryptionKeyInCode';
   private algorithm = 'aes-256-cbc';
-  private iv = Buffer.from('00000000000000000000000000000000', 'hex'); // initialization vector, must be 16 bytes
+  private encryptionKey = 'bf3c199c2470cb477d907b1e0917c17b'; //'TODO: notHavePlaintextEncryptionKeyInCode';
+  private iv = '5183666c72eec9e4'; //TODO: save in different file
 
   encrypt(text: string): string {
     const cipher = crypto.createCipheriv(
       this.algorithm,
-      Buffer.from(this.encryptionKey),
+      this.encryptionKey,
       this.iv,
     );
     let encrypted = cipher.update(text);
