@@ -12,7 +12,7 @@ import { OfferModule } from './offer/offer.module';
     OfferModule,
     UserModule,
     OrderModule,
-    MongooseModule.forRoot('mongodb://localhost:27017/appchargeAssignment'),
+    MongooseModule.forRoot('mongodb://172.16.0.1:27017/appchargeAssignment'),
   ],
   controllers: [AppController],
   providers: [AppService],

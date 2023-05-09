@@ -8,14 +8,25 @@ services:
     restart: always
     ports:
       - '27017:27017'
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
+    networks:
+      mongo_net:
+        ipv4_address: 172.16.0.1
+    command: mongod --bind_ip 127.0.0.1,172.16.0.1      
 
   appchargeAssignment:
     build: .
+    networks:
+      mongo_net:
     image: appchargeassignment
     ports:
       - '3000:3000'
     depends_on:
       - mongo    
+
+networks:
+  mongo_net:
+    driver: bridge
+    ipam:
+      config:
+      - subnet: 172.16.0.0/24
+        gateway: 172.16.0.254      
